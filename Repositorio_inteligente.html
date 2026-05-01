@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Repositorio de Documentos Recepcionales — ENSEBCS</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --vino: #6b1a2a;
+    --vino-oscuro: #4a0f1c;
+    --vino-claro: #8c2a3e;
+    --dorado: #c9a84c;
+    --crema: #f7f2ee;
+    --blanco: #ffffff;
+    --texto: #1c1c1c;
+    --texto-suave: #5a5a5a;
+    --borde: #e0d8d0;
+    --radio: 12px;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--crema);
+    color: var(--texto);
+    min-height: 100vh;
+  }
+
+  /* ENCABEZADO */
+  .header {
+    background: var(--vino-oscuro);
+    color: white;
+    padding: 2.5rem 2rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 240px; height: 240px;
+    border-radius: 50%;
+    background: rgba(201,168,76,0.10);
+  }
+
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -50px; left: 25%;
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+  }
+
+  .header-inner {
+    max-width: 1300px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+    text-align: center;
+  }
+
+  .header-logo-wrap { display: none; }
+
+  .header-logo { display: none; }
+
+  .escuela-label {
+    font-size: 12px;
+    font-weight: 300;
+    letter-spacing: 0.10em;
+    opacity: 0.75;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(22px, 4vw, 34px);
+    font-weight: 500;
+    line-height: 1.35;
+    margin-bottom: 4px;
+  }
+
+  .linea-dorada {
+    width: 48px;
+    height: 2px;
+    background: var(--dorado);
+    margin: 14px auto;
+    border-radius: 2px;
+  }
+
+  .header-sub {
+    font-size: 13px;
+    opacity: 0.7;
+    font-weight: 300;
+    margin-top: 4px;
+  }
+
+  .header-contador {
+    display: inline-block;
+    margin-top: 12px;
+    background: rgba(201,168,76,0.2);
+    border: 1px solid rgba(201,168,76,0.4);
+    color: var(--dorado);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 14px;
+    border-radius: 99px;
+    letter-spacing: 0.04em;
+  }
+
+  /* LAYOUT DOS COLUMNAS */
+  .contenedor {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 1.5rem;
+    align-items: start;
+  }
+
+  .mapa-panel { position: sticky; top: 1rem; }
+
+  .mapa-titulo {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--texto-suave);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .mapa-frame {
+    width: 100%;
+    height: 580px;
+    border: 1px solid var(--borde);
+    border-radius: var(--radio);
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+
+  .mapa-frame iframe { width: 100%; height: 100%; border: none; }
+
+  /* CONTENIDO */
+  .main { width: 100%; }
+
+  @media (max-width: 900px) {
+    .contenedor { grid-template-columns: 1fr; }
+    .mapa-panel { position: static; }
+    .mapa-frame { height: 350px; }
+  }
+
+  /* BÚSQUEDA */
+  .search-box {
+    background: var(--blanco);
+    border-radius: var(--radio);
+    border: 1px solid var(--borde);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+  }
+
+  .search-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 14px;
+    position: relative;
+  }
+
+  .btn-limpiar {
+    position: absolute;
+    right: 110px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #aaa;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 4px 8px;
+    display: none;
+    line-height: 1;
+  }
+
+  .btn-limpiar:hover { color: var(--vino); }
+
+  .filtros-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .badge-filtros {
+    display: none;
+    background: var(--vino);
+    color: white;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 99px;
+    white-space: nowrap;
+  }
+
+  .search-row input {
+    flex: 1;
+    padding: 11px 16px;
+    border: 1.5px solid var(--borde);
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--texto);
+    background: var(--crema);
+    transition: border-color 0.2s;
+    outline: none;
+  }
+
+  .search-row input:focus { border-color: var(--vino); background: white; }
+  .search-row input::placeholder { color: #aaa; }
+
+  .btn-buscar {
+    padding: 11px 22px;
+    background: var(--vino);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+
+  .btn-buscar:hover { background: var(--vino-claro); }
+
+  .filtros {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .filtros select {
+    padding: 8px 12px;
+    border: 1.5px solid var(--borde);
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--texto);
+    background: var(--crema);
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .filtros select:focus { border-color: var(--vino); }
+
+  /* RESULTADOS */
+  .results-header {
+    font-size: 13px;
+    color: var(--texto-suave);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .results-header span {
+    display: inline-block;
+    background: var(--vino);
+    color: white;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 10px;
+    border-radius: 99px;
+  }
+
+  /* TARJETA */
+  .card {
+    background: var(--blanco);
+    border: 1px solid var(--borde);
+    border-left: 3px solid transparent;
+    border-radius: var(--radio);
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 12px;
+    transition: box-shadow 0.2s, border-color 0.2s, transform 0.15s;
+    animation: fadeIn 0.3s ease both;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card:nth-child(1) { animation-delay: 0.03s; }
+  .card:nth-child(2) { animation-delay: 0.06s; }
+  .card:nth-child(3) { animation-delay: 0.09s; }
+  .card:nth-child(4) { animation-delay: 0.12s; }
+  .card:nth-child(5) { animation-delay: 0.15s; }
+
+  .card:hover {
+    box-shadow: 0 6px 24px rgba(0,0,0,0.09);
+    border-left-color: var(--dorado);
+    transform: translateY(-2px);
+  }
+
+  .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+
+  .card-titulo {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--texto);
+    line-height: 1.45;
+    font-family: 'Playfair Display', serif;
+  }
+
+  .badge {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 11px;
+    border-radius: 99px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    letter-spacing: 0.02em;
+  }
+
+  .badge-tesis { background: #f5e0e4; color: #6b1a2a; }
+  .badge-informe { background: #ddf3e4; color: #1a5c32; }
+  .badge-portafolio { background: #fff0d4; color: #7a4d00; }
+  .badge-otro { background: #f0ede7; color: #5a5248; }
+
+  .card-meta {
+    font-size: 12.5px;
+    color: var(--texto-suave);
+    margin-top: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 14px;
+    align-items: center;
+  }
+
+  .card-meta-item { display: flex; align-items: center; gap: 4px; }
+
+  .dot {
+    width: 3px; height: 3px;
+    background: var(--dorado);
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .card-plan {
+    font-size: 12px;
+    color: #888;
+    margin-top: 5px;
+  }
+
+  .btn-ver {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 6px 16px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    color: var(--vino);
+    border: 1.5px solid var(--vino);
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .btn-ver:hover { background: var(--vino); color: white; }
+
+  /* ESTADOS */
+  .estado {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--texto-suave);
+  }
+
+  .estado-icono { font-size: 36px; margin-bottom: 12px; }
+  .estado p { font-size: 14px; line-height: 1.6; }
+  .estado-error { color: #6b1a2a; }
+
+  /* PIE */
+  .footer {
+    text-align: left;
+    padding: 1rem 0 0;
+    font-size: 12px;
+    color: #aaa;
+    border-top: 1px solid var(--borde);
+    margin-top: 2rem;
+  }
+
+  .mapa-credito {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px solid var(--borde);
+  }
+
+  .mapa-logo {
+    height: 32px;
+    width: auto;
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+
+  .mapa-credito span {
+    font-size: 11px;
+    color: #aaa;
+    line-height: 1.4;
+  }
+
+  .footer-global {
+    text-align: center;
+    padding: 1rem;
+    font-size: 12px;
+    color: #aaa;
+    border-top: 1px solid var(--borde);
+    max-width: 1300px;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 540px) {
+    .search-row { flex-direction: column; }
+    .btn-buscar { width: 100%; }
+    .card-top { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div class="header-texto">
+      <div class="escuela-label">Baja California Sur</div>
+      <h1>Escuela Normal Superior del Estado<br>"Profr. Enrique Estrada Lucero"</h1>
+      <div class="header-lab">Laboratorio Normalista de Investigación Educativa</div>
+      <div class="linea-dorada"></div>
+      <p class="header-sub">Repositorio de Documentos Recepcionales &nbsp;|&nbsp; Observatorio de Información Geográfica para la Práctica Docente</p>
+      <div class="header-contador" id="headerContador"></div>
+    </div>
+    <div class="header-logo-wrap">
+      <img src="https://labnie.github.io/repositorio-normal/original-logo-2-lab.png" alt="Logo ENSEBCS" class="header-logo">
+    </div>
+  </div>
+</div>
+
+<div class="contenedor">
+  <div class="main">
+
+    <div class="search-box">
+    <div class="search-row">
+      <input type="text" id="searchInput" placeholder="Buscar por título, autor o escuela de práctica..." />
+      <button class="btn-limpiar" id="btnLimpiar" onclick="limpiarBusqueda()" title="Limpiar búsqueda">✕</button>
+      <button class="btn-buscar" onclick="buscar()">Buscar</button>
+    </div>
+    <div class="filtros-wrap">
+      <div class="filtros">
+      <select id="filtroTipo" onchange="buscar()">
+        <option value="">Todos los tipos</option>
+      </select>
+      <select id="filtroPrograma" onchange="buscar()">
+        <option value="">Todos los programas</option>
+      </select>
+      <select id="filtroAnio" onchange="buscar()">
+        <option value="">Todos los años</option>
+      </select>
+      <select id="filtroEscuela" onchange="buscar()">
+        <option value="">Todas las escuelas</option>
+      </select>
+      <select id="filtroSede" onchange="buscar()">
+        <option value="">Todas las sedes</option>
+      </select>
+      </div>
+      <span class="badge-filtros" id="badgeFiltros"></span>
+    </div>
+  </div>
+
+  <div class="results-header" id="resultsHeader"></div>
+  <div id="resultsList">
+    <div class="estado">
+      <div class="estado-icono">📄</div>
+      <p>Cargando documentos...</p>
+    </div>
+  </div>
+
+    <div class="footer">
+      <div class="mapa-credito" style="border-top:none; padding-top:0; margin-top:0;">
+        <img src="https://labnie.github.io/repositorio-normal/original-logo-2-lab.png" alt="Logo Lab" class="mapa-logo">
+        <span>Responsable de repositorio institucional: Uri Argumedo Hernández</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="mapa-panel">
+    <div class="mapa-titulo">Mapa de escuelas de práctica</div>
+    <div class="mapa-frame">
+      <iframe src="https://qgiscloud.com/tpineda/Obsigpd/" allowfullscreen></iframe>
+    </div>
+    <div class="mapa-credito">
+      <img src="https://labnie.github.io/repositorio-normal/original-logo-2-lab.png" alt="Logo Lab" class="mapa-logo">
+      <span>Responsable de mapa interactivo: Tito Fernando Piñeda Verdugo</span>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer-global">
+  Diseño: Laboratorio Normalista de Investigación Educativa
+</div>
+
+<script>
+const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQN3VnXH148TripGiwhOyJdRbMmIKBkIOrupfPuvtFI9peLtS8kj4Z-L7tOXVJ9aA/pub?output=csv";
+
+let allDocs = [];
+
+function parseCSV(text) {
+  const lines = text.split("\n");
+  const headers = lines[0].split(",").map(h => h.trim().replace(/^"|"$/g, "").trim());
+  return lines.slice(1).filter(l => l.trim()).map(line => {
+    const values = [];
+    let cur = "", inQ = false;
+    for (let c of line) {
+      if (c === '"') { inQ = !inQ; }
+      else if (c === ',' && !inQ) { values.push(cur.trim()); cur = ""; }
+      else cur += c;
+    }
+    values.push(cur.trim());
+    const obj = {};
+    headers.forEach((h, i) => { obj[h] = (values[i] || "").replace(/^"|"$/g, "").trim(); });
+    return obj;
+  });
+}
+
+function normalizar(texto) {
+  return (texto || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[áàä]/g, "a")
+    .replace(/[éèë]/g, "e")
+    .replace(/[íìï]/g, "i")
+    .replace(/[óòö]/g, "o")
+    .replace(/[úùü]/g, "u")
+    .replace(/ñ/g, "n");
+}
+
+function raiz(palabra) {
+  return normalizar(palabra).replace(/(mente|cion|sion|ando|endo|ado|ido|ica|ico|icas|icos|adas|ados|idas|idos|es|as|os|a|e|o)$/, "");
+}
+
+function coincide(texto, query) {
+  const palabrasQuery = normalizar(query).split(/\s+/).filter(Boolean);
+  const textoNorm = normalizar(texto);
+  return palabrasQuery.every(pq => {
+    const raizQ = raiz(pq);
+    return textoNorm.includes(pq) || textoNorm.split(/\s+/).some(pt => raiz(pt).startsWith(raizQ) || raizQ.startsWith(raiz(pt)));
+  });
+}
+
+function badgeClass(tipo) {
+  const t = (tipo || "").toLowerCase();
+  if (t.includes("tesis")) return "badge badge-tesis";
+  if (t.includes("informe")) return "badge badge-informe";
+  if (t.includes("portafolio")) return "badge badge-portafolio";
+  return "badge badge-otro";
+}
+
+function agregarOpcion(selectId, valor) {
+  const sel = document.getElementById(selectId);
+  if ([...sel.options].some(o => o.value === valor)) return;
+  const o = document.createElement("option");
+  o.value = valor; o.textContent = valor;
+  sel.appendChild(o);
+}
+
+function poblarFiltros(docs) {
+  const tipos = [...new Set(docs.map(d => d["Tipo de documento"]).filter(Boolean))].sort();
+  const programas = [...new Set(docs.map(d => d["Programa de estudio"]).filter(Boolean))].sort();
+  const anios = [...new Set(docs.map(d => d["Año"]).filter(Boolean))].sort().reverse();
+  const escuelas = [...new Set(docs.map(d => d["Escuela de práctica"]).filter(Boolean))].sort();
+  const sedes = [...new Set(docs.map(d => d["Sede"]).filter(Boolean))].sort();
+  tipos.forEach(t => agregarOpcion("filtroTipo", t));
+  programas.forEach(p => agregarOpcion("filtroPrograma", p));
+  anios.forEach(a => agregarOpcion("filtroAnio", a));
+  escuelas.forEach(e => agregarOpcion("filtroEscuela", e));
+  sedes.forEach(s => agregarOpcion("filtroSede", s));
+}
+
+function limpiarBusqueda() {
+  document.getElementById("searchInput").value = "";
+  document.getElementById("filtroTipo").value = "";
+  document.getElementById("filtroPrograma").value = "";
+  document.getElementById("filtroAnio").value = "";
+  document.getElementById("filtroEscuela").value = "";
+  document.getElementById("filtroSede").value = "";
+  buscar();
+}
+
+function actualizarUI(q, tipo, prog, anio, escuela, sede) {
+  const btnLimpiar = document.getElementById("btnLimpiar");
+  const badgeFiltros = document.getElementById("badgeFiltros");
+  btnLimpiar.style.display = q ? "block" : "none";
+  const filtrosActivos = [tipo, prog, anio, escuela, sede].filter(Boolean).length;
+  if (filtrosActivos > 0) {
+    badgeFiltros.style.display = "inline-block";
+    badgeFiltros.textContent = `${filtrosActivos} filtro${filtrosActivos > 1 ? "s" : ""} activo${filtrosActivos > 1 ? "s" : ""}`;
+  } else {
+    badgeFiltros.style.display = "none";
+  }
+}
+
+function buscar() {
+  const q = document.getElementById("searchInput").value.trim();
+  const tipo = document.getElementById("filtroTipo").value;
+  const prog = document.getElementById("filtroPrograma").value;
+  const anio = document.getElementById("filtroAnio").value;
+  const escuela = document.getElementById("filtroEscuela").value;
+  const sede = document.getElementById("filtroSede").value;
+
+  actualizarUI(q, tipo, prog, anio, escuela, sede);
+
+  const header = document.getElementById("resultsHeader");
+  const list = document.getElementById("resultsList");
+
+  if (!q && !tipo && !prog && !anio && !escuela && !sede) {
+    header.innerHTML = "";
+    list.innerHTML = `<div class="estado"><div class="estado-icono">🔎</div><p>Escribe una palabra clave o selecciona un filtro para encontrar documentos.</p></div>`;
+    return;
+  }
+
+  const resultados = allDocs.filter(d => {
+    const texto = [d["Título"], d["Autor"], d["Escuela de práctica"], d["Plan de estudio"], d["Sede"]].join(" ");
+    return (!q || coincide(texto, q)) &&
+           (!tipo || d["Tipo de documento"] === tipo) &&
+           (!prog || d["Programa de estudio"] === prog) &&
+           (!anio || d["Año"] === anio) &&
+           (!escuela || d["Escuela de práctica"] === escuela) &&
+           (!sede || d["Sede"] === sede);
+  });
+
+  if (resultados.length === 0) {
+    header.innerHTML = "";
+    list.innerHTML = `<div class="estado"><div class="estado-icono">🔍</div><p>No encontramos documentos con esos términos.<br>Intenta con sinónimos, menos filtros, o verifica la ortografía.</p></div>`;
+    return;
+  }
+
+  header.innerHTML = `Mostrando <span>${resultados.length} documento${resultados.length !== 1 ? "s" : ""}</span>`;
+
+  list.innerHTML = resultados.map((d, i) => `
+    <div class="card" style="animation-delay:${Math.min(i * 0.04, 0.3)}s">
+      <div class="card-top">
+        <div class="card-titulo">${d["Título"] || "Sin título"}</div>
+        <span class="${badgeClass(d["Tipo de documento"])}">${d["Tipo de documento"] || "Documento"}</span>
+      </div>
+      <div class="card-meta">
+        ${d["Autor"] ? `<span class="card-meta-item"><span class="dot"></span>${d["Autor"]}</span>` : ""}
+        ${d["Año"] ? `<span class="card-meta-item"><span class="dot"></span>${d["Año"]}</span>` : ""}
+        ${d["Programa de estudio"] ? `<span class="card-meta-item"><span class="dot"></span>${d["Programa de estudio"]}</span>` : ""}
+        ${d["Escuela de práctica"] ? `<span class="card-meta-item"><span class="dot"></span>${d["Escuela de práctica"]}</span>` : ""}
+        ${d["Sede"] ? `<span class="card-meta-item"><span class="dot"></span>Sede: ${d["Sede"]}</span>` : ""}
+      </div>
+      ${d["Plan de estudio"] ? `<div class="card-plan">Plan de estudio: ${d["Plan de estudio"]}</div>` : ""}
+      ${d["Liga"] ? `<a class="btn-ver" href="${d["Liga"]}" target="_blank">Ver documento</a>` : ""}
+    </div>
+  `).join("");
+}
+
+fetch(CSV_URL)
+  .then(r => { if (!r.ok) throw new Error("Error de red"); return r.text(); })
+  .then(text => {
+    allDocs = parseCSV(text).filter(d => d["Título"]);
+    if (allDocs.length === 0) {
+      document.getElementById("resultsList").innerHTML = `<div class="estado estado-error"><div class="estado-icono">⚠️</div><p>La hoja está vacía o los encabezados no coinciden.<br>Verifica que la primera fila tenga los nombres de las columnas correctos.</p></div>`;
+      return;
+    }
+    poblarFiltros(allDocs);
+    document.getElementById("headerContador").textContent = `${allDocs.length} documentos disponibles`;
+    document.getElementById("resultsHeader").innerHTML = "";
+    document.getElementById("resultsList").innerHTML = `<div class="estado"><div class="estado-icono">🔎</div><p>Escribe una palabra clave o selecciona un filtro para encontrar documentos.</p></div>`;
+  })
+  .catch(() => {
+    document.getElementById("resultsList").innerHTML = `<div class="estado estado-error"><div class="estado-icono">⚠️</div><p>No se pudo conectar con la hoja de Google Sheets.<br>Verifica que esté publicada en formato CSV.</p></div>`;
+  });
+
+document.getElementById("searchInput").addEventListener("keyup", e => {
+  if (e.key === "Enter") buscar();
+});
+</script>
+</body>
+</html>
